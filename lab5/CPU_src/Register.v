@@ -28,7 +28,9 @@ module Register #(WIDTH = 32)(
     input [WIDTH-1: 0]          reg_din,
     output reg [WIDTH-1 : 0]    reg_dout    // Value current inside the register
 );
-
+    initial begin
+        reg_dout = 0;
+    end
     always @(posedge clk) begin
         if (rst)
             reg_dout <= 0;

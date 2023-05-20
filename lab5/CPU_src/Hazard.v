@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module Hazard(
     input [4:0] rf_ra0_ex,
     input [4:0] rf_ra1_ex,
@@ -25,4 +27,15 @@ module Hazard(
     output flush_ex,
     output flush_mem
 );
+    assign rf_rd0_fe = 0;
+    assign rf_rd1_fe = 0;
+    assign rf_rd0_fd = 0;
+    assign rf_rd1_fd = 0;
+    assign stall_if = 0;
+    assign stall_id = 0;
+    assign stall_ex = 0;
+    assign flush_if = 0;
+    assign flush_id = 0;
+    assign flush_ex = 0;
+    assign flush_mem = 0;
 endmodule

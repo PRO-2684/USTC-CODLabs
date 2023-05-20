@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module MEM(
     input clk,
 
@@ -5,7 +7,7 @@ module MEM(
 	// IM port
     input [31:0] im_addr,
     output [31:0] im_dout,
-	
+
 	// DM port
     input  [31:0] dm_addr,
     input dm_we,
