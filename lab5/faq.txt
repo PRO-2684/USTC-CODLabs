@@ -1,1 +1,9 @@
+Links:
 https://cscourse.ustc.edu.cn/vdir/Gitlab/PB20020586/lab-of-cod-faq/-/blob/master/Lab5FAQ/lab5.md
+https://rec.ustc.edu.cn/share/70f74240-ebda-11ed-99ef-63e4c539b0ec
+
+- *ID/EX 段间寄存器的 dm_we_in 端口 连接的 dm_we_id 信号即为 Ctrl 模块产生的 mem_we_id 信号。
+- *ID/EX 段间寄存器的 dm_din_out 端口连接的 dm_din_ex 为无效数据。
+- *EX/MEM 段间寄存器的 dm_din_in 端口连接的 rd1_ex 信号即为 rf_rd1_ex 信号。
+- *DEBUG 部分 cpu_check_data_sel 模块的 rd_dbg_id 信号即为 rf_rd_dbg_id 信号。
+- br_type 信号的位宽不匹配问题。
