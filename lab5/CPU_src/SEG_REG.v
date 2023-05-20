@@ -153,7 +153,7 @@ module SEG_REG (
     output [31:0] dm_dout_out,
     output dm_we_out
 );
-    Register #(613) my_reg (
+    Register #(614) my_reg (
         .clk(clk),
         .rst(flush),
 

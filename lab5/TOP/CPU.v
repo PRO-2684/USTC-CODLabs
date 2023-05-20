@@ -21,7 +21,7 @@ module CPU(
     output [31:0] current_pc, 	        // Current_pc, pc_out
     output [31:0] next_pc,              // Next_pc, pc_in    
     input [31:0] cpu_check_addr,	    // Check current datapath state (code)
-    output reg [31:0] cpu_check_data    // Current datapath state data
+    output [31:0] cpu_check_data    // Current datapath state data
 );
     
     // 1. 将单周期 CPU 拆分为各段，并添加段间寄存器。
@@ -61,8 +61,6 @@ module CPU(
     wire [31:0] rf_rd1_fd;
     wire [31:0] pc_cur_mem;
     wire [31:0] inst_mem;
-    wire [31:0] rf_ra0_mem;
-    wire [31:0] rf_ra1_mem;
     wire [31:0] rf_rd0_raw_mem;
     wire [31:0] rf_rd1_raw_mem;
     wire [31:0] rf_rd0_mem;
@@ -101,6 +99,8 @@ module CPU(
     wire [4:0] rf_ra1_id;
     wire [4:0] rf_wa_id;
     wire [4:0] rf_wa_wb;
+    wire [4:0] rf_ra0_mem;
+    wire [4:0] rf_ra1_mem;
     wire [4:0] rf_ra0_ex;
     wire [4:0] rf_ra1_ex;
     wire [4:0] rf_wa_ex;

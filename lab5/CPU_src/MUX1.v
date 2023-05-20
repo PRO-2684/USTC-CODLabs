@@ -7,8 +7,8 @@
 // This is a simple 2-1 Mux.
 /* Ports
     Mux2 #(32) my_mux (
-        .sr0(),
-        .sr1(),
+        .src0(),
+        .src1(),
         .sel(),
 
         .res()
@@ -16,8 +16,8 @@
 */
 
 module MUX1 #(WIDTH = 32) (
-    input [WIDTH-1: 0]          sr0,
-    input [WIDTH-1: 0]          sr1,
+    input [WIDTH-1: 0]          src0,
+    input [WIDTH-1: 0]          src1,
     input                       sel,
 
     output reg [WIDTH-1: 0]     res
@@ -25,8 +25,8 @@ module MUX1 #(WIDTH = 32) (
 
     always @(*) begin
         case (sel)
-            1'b0: res = sr0;
-            1'b1: res = sr1;
+            1'b0: res = src0;
+            1'b1: res = src1;
         endcase // We don't need default here
     end
 
