@@ -11,9 +11,9 @@
         .sr1(),
         .sr2(),
         .sr3(),
-        .mux_ctrl(),
+        .sel(),
 
-        .mux_out()
+        .res()
     );
 */
 
@@ -22,17 +22,17 @@ module MUX2 #(WIDTH = 32) (
     input [WIDTH-1: 0]          sr1,
     input [WIDTH-1: 0]          sr2,
     input [WIDTH-1: 0]          sr3,
-    input [1:0]                 mux_ctrl,
+    input [1:0]                 sel,
 
-    output reg [WIDTH-1: 0]     mux_out
+    output reg [WIDTH-1: 0]     res
 );  
 
     always @(*) begin
-        case (mux_ctrl)
-            2'b00: mux_out = sr0;
-            2'b01: mux_out = sr1;
-            2'b10: mux_out = sr2;
-            2'b11: mux_out = sr3;
+        case (sel)
+            2'b00: res = sr0;
+            2'b01: res = sr1;
+            2'b10: res = sr2;
+            2'b11: res = sr3;
         endcase // We don't need default here
     end
 

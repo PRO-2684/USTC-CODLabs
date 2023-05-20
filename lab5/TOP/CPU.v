@@ -13,7 +13,7 @@ module CPU(
     output [31:0] im_addr,      // Instruction address (The same as current PC)
     input [31:0] im_dout,       // Instruction data (Current instruction)
     output [31:0] mem_addr,     // Memory read/write address
-    output mem_we,              // Memory writing enable		            
+    output mem_we,              // Memory writing enable
     output [31:0] mem_din,      // Data ready to write to memory
     input [31:0] mem_dout,	    // Data read from memory
 
@@ -459,4 +459,6 @@ module CPU(
         .dm_we_out(dm_we_wb)
     );
     MUX2 reg_write_sel(.sel(rf_wd_sel_wb), .src0(alu_ans_wb), .src1(pc_add4_wb), .src2(dm_dout_wb), .src3(imm_wb), .res(rf_wd_wb));
+    Hazard hazard(.rf_ra0_ex(rf_ra0_ex), .rf_ra1_ex(rf_ra1_ex), .rf_re0_ex(rf_re0_ex), .rf_re1_ex(rf_re1_ex), .rf_wa_mem(rf_wa_mem), .rf_we_mem(rf_we_mem), .rf_wd_sel_mem(rf_wd_sel_mem), .alu_ans_mem(alu_ans_mem), .pc_add4_mem(pc_add4_mem), .imm_mem(imm_mem), .rf_wa_wb(rf_wa_wb), .rf_we_wb(rf_we_wb), .rf_wd_wb(rf_wd_wb), .pc_sel_ex(pc_sel_ex), .rf_rd0_fe(rf_rd0_fe), .rf_rd1_fe(rf_rd1_fe), .rf_rd0_fd(rf_rd0_fd), .rf_rd1_fd(rf_rd1_fd), .stall_if(stall_if), .stall_id(stall_id), .stall_ex(stall_ex), .flush_if(flush_if), .flush_id(flush_id), .flush_ex(flush_ex), .flush_mem(flush_mem));
+    MUX2 npc_sel(.sel(pc_sel_ex), .src0(pc_add4_ex), .src1(pc_jalr_ex), .src2(alu_ans_ex), .src3(alu_ans_ex), .res(pc_next));
 endmodule
