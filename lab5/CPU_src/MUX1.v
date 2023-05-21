@@ -5,15 +5,6 @@
  */
 
 // This is a simple 2-1 Mux.
-/* Ports
-    Mux2 #(32) my_mux (
-        .src0(),
-        .src1(),
-        .sel(),
-
-        .res()
-    );
-*/
 
 module MUX1 #(WIDTH = 32) (
     input [WIDTH-1: 0]          src0,

@@ -26,9 +26,6 @@ module RF (
     end
     wire we_ = we & ( | wa); // Corrected we signal (ignore we signal if wa == 0)
     // Write-first
-    // assign rd0 = (ra0 != 0) ? (((ra0 == wa) && we)? wd : data[ra0]): 0;
-    // assign rd1 = (ra1 != 0) ? (((ra1 == wa) && we)? wd : data[ra1]): 0;
-    // assign rd_dbg = (ra_dbg != 0)? (((ra_dbg == wa) && we)? wd : data[ra_dbg]) : 0;
     assign rd0 = ((ra0 == wa) && we_)? wd : data[ra0];
     assign rd1 = ((ra1 == wa) && we_)? wd : data[ra1];
     assign rd_dbg = ((ra_dbg == wa) && we_)? wd : data[ra_dbg];

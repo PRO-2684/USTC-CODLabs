@@ -4,19 +4,6 @@
  *   Last update: 2023.05.03
  */
 
-// This is a simple 4-1 Mux.
-/* Ports
-    Mux4 #(32) my_mux (
-        .src0(),
-        .src1(),
-        .src2(),
-        .src3(),
-        .sel(),
-
-        .res()
-    );
-*/
-
 module MUX2 #(WIDTH = 32) (
     input [WIDTH-1: 0]          src0,
     input [WIDTH-1: 0]          src1,

@@ -66,20 +66,7 @@ module CTRL (
     // [rf_we, rf_wd_sel] Write registers: arith, addi, auipc, lui, lw, jal, jalr
     // 在写寄存器 rd 为 x0 时, 将 rf_we 设置为 0
     assign rf_we = (|inst[11:7]) & (opcode == ARITH | opcode == ARITHI | opcode == AUIPC | opcode == LUI | opcode == LW | opcode == JAL | opcode == JALR);
-    // always @(*) begin
-    //     if (|inst[11:7])
-    //         case (opcode)
-    //             ARITH: rf_we = 1;
-    //             ARITHI: rf_we = 1;
-    //             AUIPC: rf_we = 1;
-    //             LUI: rf_we = 1;
-    //             LW: rf_we = 1;
-    //             JAL: rf_we = 1;
-    //             JALR: rf_we = 1;
-    //             default: rf_we = 0;
-    //         endcase
-    //     else rf_we = 0; // 写寄存器 rd 为 x0
-    // end
+
     always @(*) begin
         case (opcode)
             ARITH: rf_wd_sel = 0;

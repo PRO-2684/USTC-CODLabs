@@ -4,19 +4,6 @@
  *   Last update: 2023.04.30
  */
 
-
-// This is a simple register module
-/* Ports
-    Register #(32) my_reg (
-        .clk(),
-        .rst(),
-
-        .reg_en(),
-        .reg_din(),
-        .reg_dout()
-    );
-*/
-
 module Register #(WIDTH = 32)(
     input                       clk,
     input                       rst,
