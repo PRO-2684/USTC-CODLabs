@@ -37,7 +37,7 @@ module Hazard(
     assign src1_mem_fwd = rf_re1_ex && (rf_ra1_ex == rf_wa_mem); // EX 段 src1 寄存器读使能非零，且上述寄存器读地址等于 MEM 段的写地址
     assign src0_wb_fwd = rf_re0_ex && (rf_ra0_ex == rf_wa_wb); // EX 段 src0 寄存器读使能非零，且上述寄存器读地址等于 WB 段的写地址
     assign src1_wb_fwd = rf_re1_ex && (rf_ra1_ex == rf_wa_wb); // EX 段 src1 寄存器读使能非零，且上述寄存器读地址等于 WB 段的写地址
-    // Forwarding data
+    // Forwarding data, shared by src0 & src1
     always @(*) begin
         case (rf_wd_sel_mem)
             0: wb_fd = alu_ans_mem;
