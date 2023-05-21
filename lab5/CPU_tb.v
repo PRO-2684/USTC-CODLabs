@@ -10,7 +10,6 @@ module CPU_tb();
     reg cpu_clk, cpu_rst;
     wire[31:0] mem_addr, mem_din, mem_dout, im_addr, im_dout, current_pc, next_pc;
     wire mem_we;
-    wire [31:0] check_data;
 
     CPU cpu (
         .clk(cpu_clk), 
@@ -31,7 +30,7 @@ module CPU_tb();
         .current_pc(current_pc),
         .next_pc(next_pc),
         .cpu_check_addr(32'h0),
-        .cpu_check_data(check_data)
+        .cpu_check_data()   // No need to connect
     );
 
 
