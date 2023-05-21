@@ -98,12 +98,12 @@ module Check_Data_SEL (
             5'd16: check_data = alu_src2;
             5'd17: check_data = alu_func;
             5'd18: check_data = alu_ans;
-            5'd19: check_data = pc_add4;
+            5'd19: check_data = pc_add4; // 0x13
             5'd20: check_data = pc_br;
             5'd21: check_data = pc_jal;
             5'd22: check_data = pc_jalr;
-            5'd23: check_data = pc_sel;
-            5'd24: check_data = pc_next;
+            5'd23: check_data = pc_sel; // 0x17
+            5'd24: check_data = pc_next; // 0x18
             5'd25: check_data = dm_addr;
             5'd26: check_data = dm_din;
             5'd27: check_data = dm_dout;

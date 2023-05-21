@@ -6,13 +6,13 @@ module Branch (
     input [2:0] br_type,
     output reg br
 );
-    parameter BEQ_type = 3'b000;
+    parameter BEQ_type = 3'b110;
     parameter BNE_type = 3'b001;
     parameter BLT_type = 3'b010;
     parameter BGE_type = 3'b011;
     parameter BLTU_type = 3'b100;
     parameter BGEU_type = 3'b101;
-    // parameter NO_BR = 3'b11;
+    // parameter NO_BR = 3'b000;
     always @(*) begin
         case (br_type)
             BEQ_type: br = (op1 == op2);

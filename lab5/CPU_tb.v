@@ -10,6 +10,7 @@ module CPU_tb();
     reg cpu_clk, cpu_rst;
     wire[31:0] mem_addr, mem_din, mem_dout, im_addr, im_dout, current_pc, next_pc;
     wire mem_we;
+    wire [31:0] check_data;
 
     CPU cpu (
         .clk(cpu_clk), 
@@ -20,17 +21,17 @@ module CPU_tb();
         .im_addr(im_addr),
         .im_dout(im_dout),
         .mem_addr(mem_addr),
-        .mem_we(mem_we),			
-        .mem_din(mem_din),	
+        .mem_we(mem_we),
+        .mem_din(mem_din),
         .mem_dout(mem_dout),
 
 
         // ================================ Debug Part ================================
         // Debug BUS with PDU
-        .current_pc(current_pc), 	 
-        .next_pc(next_pc),   
-        .cpu_check_addr('b0),	
-        .cpu_check_data()    // No need to connect
+        .current_pc(current_pc),
+        .next_pc(next_pc),
+        .cpu_check_addr(32'h0),
+        .cpu_check_data(check_data)
     );
 
 

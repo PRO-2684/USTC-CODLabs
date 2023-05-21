@@ -72,7 +72,7 @@ gen("""
     pc_jalr l
     jal
     jalr
-    br_type 2
+    br_type 3
     br
     pc_sel 2
     pc_next l
