@@ -48,9 +48,6 @@ module CTRL (
     assign jalr = (opcode == JALR);
     // [br_type] Branch control: beq, blt
     always @(*) begin
-        // if (opcode == BR && inst[14:12] == 3'b000) br_type = BEQ_type;
-        // else if (opcode == BR && inst[14:12] == 3'b100) br_type = BLT_type;
-        // else br_type = NO_BR;
         if (opcode == BR) begin
             case (inst[14:12])
                 3'b000: br_type = BEQ_type;
@@ -107,8 +104,8 @@ module CTRL (
         end else
             alu_func = 4'b0000; // Add
     end
-    // [imm_type]
-    assign imm_type = 0; // TODO: Port imm_type logic from `Immediate.v`
+    // [imm_type] COmpleted at `Immediate.v`
+    assign imm_type = 0;
     // [mem_we]
     assign mem_we = (opcode == SW);
 endmodule

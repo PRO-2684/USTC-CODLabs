@@ -23,13 +23,6 @@ module CPU(
     input [31:0] cpu_check_addr,	    // Check current datapath state (code)
     output [31:0] cpu_check_data    // Current datapath state data
 );
-    
-    // 1. 将单周期 CPU 拆分为各段，并添加段间寄存器。
-    // 2. 对单周期 CPU 的模块（如寄存器堆）进行调整，以通过基础测试 simple_test.asm。
-    // 3. 将冒险处理模块的控制部分完成，以通过控制冒险测试 control_test.asm。
-    // 4. 进一步完成冒险处理模块，以通过数据冒险测试 data_test.asm。
-    // 5. 用 pipeline_test.asm 进行必做部分最终测试。
-    // 6. 阅读附加部分文档并量力完成选做。
     wire [31:0] inst_raw;
     wire [31:0] dm_dout;
     wire [31:0] pc_cur_if;
