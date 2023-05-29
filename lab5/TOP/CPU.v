@@ -1,12 +1,12 @@
 `timescale 1ns / 1ps
 
-/* 
+/*
  *   Author: YOU
  *   Last update: 2023.04.20
  */
 
 module CPU(
-    input clk, 
+    input clk,
     input rst,
 
     // MEM And MMIO Data BUS
@@ -19,9 +19,10 @@ module CPU(
 
     // Debug BUS with PDU
     output [31:0] current_pc, 	        // Current_pc, pc_out
-    output [31:0] next_pc,              // Next_pc, pc_in    
+    output [31:0] next_pc,              // Next_pc, pc_in
     input [31:0] cpu_check_addr,	    // Check current datapath state (code)
-    output [31:0] cpu_check_data    // Current datapath state data
+    output [31:0] cpu_check_data,    // Current datapath state data
+    output ebreak
 );
     wire [31:0] inst_raw;
     wire [31:0] dm_dout;
@@ -86,7 +87,7 @@ module CPU(
     wire [31:0] dm_addr_wb;
     wire [31:0] dm_din_wb;
     wire [31:0] dm_dout_wb;
-    
+
     wire [4:0] rf_ra0_id;
     wire [4:0] rf_ra1_id;
     wire [4:0] rf_wa_id;
@@ -162,7 +163,6 @@ module CPU(
     wire jalr_wb;
     wire br_wb;
     wire dm_we_wb;
-    wire ebreak;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
