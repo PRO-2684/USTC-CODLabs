@@ -120,7 +120,6 @@ module PDU_ctrl(
     // Part 2
     always @(*) begin
         main_next_state = main_current_state;
-
         case (main_current_state)
             WAIT: begin
                 if (din_vld && din_data == "s") begin
@@ -198,11 +197,10 @@ module PDU_ctrl(
             end
 
             RUN_enter: begin
-                if (current_pc == bp_pc || current_pc > 32'h3fff || current_pc < 32'h2ff0)  // TODO: Add a counter
+                if (ebreak || current_pc == bp_pc || current_pc > 32'h3fff || current_pc < 32'h2ff0)  // TODO: Add a counter
                     main_next_state = RUN_done;
                 else if (pc_seg_vld)
                     main_next_state = SEG_display;
-
             end
 
             RUN_done: main_next_state = WAIT;
