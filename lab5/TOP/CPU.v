@@ -162,6 +162,7 @@ module CPU(
     wire jalr_wb;
     wire br_wb;
     wire dm_we_wb;
+    wire ebreak;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
@@ -226,7 +227,7 @@ module CPU(
     );
     RF rf(.we(rf_we_wb), .clk(clk), .ra0(rf_ra0_id), .ra1(rf_ra1_id), .wa(rf_wa_wb), .wd(rf_wd_wb), .ra_dbg(cpu_check_addr[4:0]), .rd0(rf_rd0_raw_id), .rd1(rf_rd1_raw_id), .rd_dbg(rf_rd_dbg_id));
     Immediate immediate(.imm_type(imm_type_id), .inst(inst_id), .imm(imm_id));
-    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id));
+    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak));
     SEG_REG seg_reg_id_ex (
         .clk(clk),
         .flush(flush_ex),

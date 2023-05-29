@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-/* 
+/*
  *   Author: wintermelon
  *   Last update: 2023.04.13
  */
@@ -13,7 +13,7 @@ module PDU(
     input btn,      // button
     input [7:0] sw,	// sw7-0
 
-    // Output: leds and segments	
+    // Output: leds and segments
     output [7:0] led,	    // led7-0
     output [2:0] hexplay_an,		// hexplay_an
     output [3:0] hexplay_data,		// hexplay_data
@@ -25,11 +25,11 @@ module PDU(
 
     // ================================ MMIO Part ================================
     // MMIO BUS
-    input [31:0] mmio_addr,       
-    input mmio_we,   
-    input [31:0] mmio_din,           
-    output [31:0] mmio_dout,        
-     
+    input [31:0] mmio_addr,
+    input mmio_we,
+    input [31:0] mmio_din,
+    output [31:0] mmio_dout,
+
 
     // ================================ Debug Part ================================
     // CPU control signals
@@ -42,6 +42,7 @@ module PDU(
     output [31:0] cpu_check_addr,
     input [31:0] current_pc,
     input [31:0] next_pc,
+    input ebreak,
 
     // MEM debug bus
     output [31:0] mem_check_addr,
@@ -67,7 +68,7 @@ module PDU(
             btn_r2 <= btn_r1;
             btn_r3 <= btn_r2;
         end
-    end 
+    end
     assign pos_btn = (btn_r2 && ~btn_r3) ? 1 : 0;
 
 
@@ -116,10 +117,10 @@ module PDU(
         .rst(rst),
 
         // MMIO BUS
-        .mmio_addr(mmio_addr),   
-        .mmio_we(mmio_we),    
-        .mmio_dout(mmio_dout),    
-        .mmio_din(mmio_din),  
+        .mmio_addr(mmio_addr),
+        .mmio_we(mmio_we),
+        .mmio_dout(mmio_dout),
+        .mmio_din(mmio_din),
 
 
         // Control signal with outside
@@ -158,32 +159,33 @@ module PDU(
 
         .pc_seg_data(pc_seg_data),
         .pc_seg_vld(pc_seg_vld),
-    
+
 
         // Control signal with CPU
         .cpu_rst(cpu_rst),
         .cpu_clk(cpu_clk),
         .current_pc(current_pc),
-        .next_pc(next_pc)
+        .next_pc(next_pc),
+        .ebreak(ebreak)
     );
 
 
-    
-    Shift_reg my_reg( 
+
+    Shift_reg my_reg(
         .clk(clk),
-        .rst(rst),                
+        .rst(rst),
 
         .din(32'b0),
         .hex(ded_hex),
         .add(ded_add),
         .del(1'b0),
         .set(pos_btn),
-        
+
         .dout(shift_reg_data)
     );
 
 
-    Segment seg (   
+    Segment seg (
         .clk(clk),
         .rst(rst),
 
@@ -195,5 +197,5 @@ module PDU(
     assign led[3:0] = led_30;
     assign led[7:4] = ctrl_led[7:4];
 
-    
+
 endmodule

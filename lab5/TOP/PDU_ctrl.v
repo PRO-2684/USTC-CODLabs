@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-/* 
+/*
  *   Author: wintermelon
  *   Last update: 2023.04.13
  */
@@ -27,13 +27,14 @@ module PDU_ctrl(
 
     input [31:0] pc_seg_data,
     input pc_seg_vld,
-    
+
 
     // Control signal with CPU
     output reg cpu_rst,
     output reg cpu_clk,
     input [31:0] current_pc,
-    input [31:0] next_pc
+    input [31:0] next_pc,
+    input ebreak
 );
 
     reg [10:0] main_current_state, main_next_state;
@@ -109,7 +110,7 @@ module PDU_ctrl(
 
     // FSM Part 1
     always @(posedge clk) begin
-        if (rst) 
+        if (rst)
             main_current_state <= WAIT;
         else
             main_current_state <= main_next_state;
@@ -120,7 +121,7 @@ module PDU_ctrl(
     always @(*) begin
         main_next_state = main_current_state;
 
-        case (main_current_state) 
+        case (main_current_state)
             WAIT: begin
                 if (din_vld && din_data == "s") begin
                     main_next_state = STEP_SUB_s;
@@ -148,14 +149,14 @@ module PDU_ctrl(
                     "u": main_next_state = SUB_u;
                 endcase
             end
-           
+
             STEP_t: if (din_vld) begin
                 if (din_data == "e")
                     main_next_state = STEP_e;
                 else
                     main_next_state = WAIT;
             end
-            
+
             STEP_e: if (din_vld) begin
                 if (din_data == "p")
                     main_next_state = STEP_p;
@@ -199,7 +200,7 @@ module PDU_ctrl(
             RUN_enter: begin
                 if (current_pc == bp_pc || current_pc > 32'h3fff || current_pc < 32'h2ff0)  // TODO: Add a counter
                     main_next_state = RUN_done;
-                else if (pc_seg_vld) 
+                else if (pc_seg_vld)
                     main_next_state = SEG_display;
 
             end
@@ -223,8 +224,8 @@ module PDU_ctrl(
                     "0": main_next_state = CHECK_0;
                     default: main_next_state = WAIT;
                 endcase
-            end 
-            
+            end
+
             CHECK_input: if (din_vld && din_data == ";") begin
                 main_next_state = CHECK_done;
             end
@@ -339,7 +340,7 @@ module PDU_ctrl(
             // ====================== SEGMENT part ======================
 
             SEG_display: begin
-                if (btn) 
+                if (btn)
                     main_next_state = SEG_done;
             end
 
@@ -382,7 +383,7 @@ module PDU_ctrl(
             PRINT_BP_done: print_bp = 1'b1;
         endcase
     end
-    
+
 
     // Decide check_addr
     always @(posedge clk) begin
@@ -402,13 +403,13 @@ module PDU_ctrl(
                 SUB_done: begin
                     check_addr <= check_addr - 1;
                 end
-                CHECK_1: 
+                CHECK_1:
                     check_addr <= 32'h0000_1000;    // RF
                 CHECK_2:
                     check_addr <= 32'h0000_2000;    // DM
                 CHECK_0:
                     check_addr <= 32'h0;
-                CHECK_00: 
+                CHECK_00:
                     check_addr <= 32'h0;
                 CHECK_01:
                     check_addr <= 32'h0000_0020;    // 001x_0000
@@ -420,7 +421,7 @@ module PDU_ctrl(
                     check_addr <= 32'h0000_0080;    // 100x_0000
                 CHECK_05:
                     check_addr <= 32'h0000_00a0;    // 101x_0000
-                
+
                 CHECK_input: if (din_vld) begin
                     case (din_data)
                         "0": check_addr_offset <= {{check_addr_offset}, {4'h0}};
@@ -445,7 +446,7 @@ module PDU_ctrl(
                 CHECK_done: begin
                     check_addr <= check_addr + check_addr_offset;
                 end
-            endcase 
+            endcase
         end
     end
 
@@ -456,12 +457,12 @@ module PDU_ctrl(
             bp_pc <= 0;
         end
         else begin
-            if (main_current_state == STEP_done) 
+            if (main_current_state == STEP_done)
                 bp_pc <= next_pc;
-            else if (main_current_state == BP_b && din_vld) 
+            else if (main_current_state == BP_b && din_vld)
                 bp_pc <= 0;
             else if (main_current_state == BP_p && din_vld) begin
-                case (din_data) 
+                case (din_data)
                     "0": bp_pc <= {{bp_pc}, {4'h0}};
                     "1": bp_pc <= {{bp_pc}, {4'h1}};
                     "2": bp_pc <= {{bp_pc}, {4'h2}};
@@ -531,20 +532,20 @@ module PDU_ctrl(
             cpu_clk <= 0;
         end
         else begin
-            if (cpu_clk_enable || cpu_clk_conter != 0) begin    
+            if (cpu_clk_enable || cpu_clk_conter != 0) begin
                 if (cpu_clk_conter == CPU_CLK_N + CPU_CLK_N) begin
                     cpu_clk_conter <= 'h0;
                     cpu_clk <= 0;
                 end
-                else begin               
+                else begin
                     if (cpu_clk_conter < CPU_CLK_N)
                         cpu_clk <= 1;
-                    else 
+                    else
                         cpu_clk <= 0;
                     cpu_clk_conter <= cpu_clk_conter + 'h1;
                 end
             end
-        
+
         end
     end
 

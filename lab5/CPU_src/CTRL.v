@@ -11,7 +11,8 @@ module CTRL (
     output reg [3:0] alu_func,
     output jal, jalr,
     output reg [2:0] br_type,
-    output mem_we
+    output mem_we,
+    output ebreak
 );
     // 在读寄存器 rs 为 x0 时, 将 rf_re 设置为 0
     assign rf_re0 = |inst[19:15];
@@ -28,6 +29,7 @@ module CTRL (
     parameter JALR = 7'b1100111;
     parameter LW = 7'b0000011;
     parameter SW = 7'b0100011;
+    parameter EBREAK = 7'b1110011;
     // Branch types
     parameter BEQ_type = 3'b110;
     parameter BNE_type = 3'b001;
@@ -108,4 +110,6 @@ module CTRL (
     assign imm_type = 0;
     // [mem_we]
     assign mem_we = (opcode == SW);
+    // [ebreak]
+    assign ebreak = (opcode == EBREAK);
 endmodule
