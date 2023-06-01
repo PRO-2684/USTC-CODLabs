@@ -9,6 +9,7 @@ module Immediate (
 
     // Judge opcode
     wire [6:0] opcode = inst[6:0];
+    wire [2:0] func = inst[14:12];
 
     // Immediate value for different instruction types
     wire [31:0] imm_i = {{20{inst[31]}}, inst[31:20]};
@@ -21,7 +22,7 @@ module Immediate (
     always @(*) begin
         imm = 0;
         case (opcode)
-            7'b0010011: imm = imm_i; // ARITHI (I-type)
+            7'b0010011: imm = (func == 3'b001 || func == 3'b101) ? imm_i[5:0] : imm_i; // ARITHI (I-type)
             7'b0110111: imm = imm_u; // lui (U-type)
             7'b0000011: imm = imm_i; // lw (I-type)
             7'b1100111: imm = imm_i; // jalr (I-type)
