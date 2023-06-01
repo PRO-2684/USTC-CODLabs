@@ -21,7 +21,7 @@ module Immediate (
     always @(*) begin
         imm = 0;
         case (opcode)
-            7'b0010011: imm = imm_i; // addi (I-type)
+            7'b0010011: imm = imm_i; // ARITHI (I-type)
             7'b0110111: imm = imm_u; // lui (U-type)
             7'b0000011: imm = imm_i; // lw (I-type)
             7'b1100111: imm = imm_i; // jalr (I-type)
