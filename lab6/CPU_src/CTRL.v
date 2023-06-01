@@ -38,10 +38,6 @@ module CTRL (
     parameter BLTU_type = 3'b100;
     parameter BGEU_type = 3'b101;
     parameter NO_BR = 3'b000;
-    // Immediate types
-    // Shift types
-    parameter SHIFT_LEFT = 1'b0;
-    parameter SHIFT_RIGHT = 1'b1;
 
     wire [6:0] opcode;
     assign opcode = inst[6:0];
@@ -95,12 +91,14 @@ module CTRL (
                 10'b0000000110: alu_func = 4'b0110; // Or
                 10'b0000000001: alu_func = 4'b1001; // Sll
                 10'b0000000101: alu_func = 4'b1000; // Srl
+                10'b0100000101: alu_func = 4'b1011; // Sra
                 default: alu_func = 4'b0000; // Add
              endcase
         else if (opcode == ARITHI) begin
              case ({inst[31:25], inst[14:12]})
                 10'b0000000001: alu_func = 4'b1001; // Slli
                 10'b0000000101: alu_func = 4'b1000; // Srli
+                10'b0100000101: alu_func = 4'b1011; // Srai
                 default: alu_func = 4'b0000; // Add
              endcase
         end else

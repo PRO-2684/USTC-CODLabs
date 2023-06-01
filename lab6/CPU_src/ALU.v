@@ -20,6 +20,7 @@ module ALU (
             4'b1000: alu_ans = alu_src1 >> alu_src2;
             4'b1001: alu_ans = alu_src1 << alu_src2;
             4'b1010: alu_ans = alu_src2; // Pass op2
+            4'b1011: alu_ans = $signed(alu_src1) >>> alu_src2;
             default: alu_ans = 0;
         endcase
     end
