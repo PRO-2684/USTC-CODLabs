@@ -1,6 +1,6 @@
 - RV32-I 指令子集扩展 必做:
     - ✓ 必做部分(10) add、addi、auipc、lui、lw、sw、beq、blt、jal、jalr
-    - 算数与逻辑指令(13) sll✓、slli✓、srl✓、srli✓、sra✓、srai✓、sub✓、xor、xori、or✓、ori、and✓、andi
+    - 算数与逻辑指令(13) sll✓、slli✓、srl✓、srli✓、sra✓、srai✓、sub✓、xor、xori、or✓、ori✓、and✓、andi✓
     - 分支与条件指令(8) bne、bge、bltu、bgeu、 slt、slti、slti、sltiu
     - 访存指令(6) lb、lh、lbu、lhu、sb、sh"
 - 分支预测 选做 3
@@ -13,4 +13,4 @@
         1. 在局部分支预测的基础上添加全局历史预测（GHR+PHT）
         2. 分析竞争处理策略，正确处理全局预测与局部预测的竞争，并接入流水线
         3. 需要能定量分析你的分支预测器对程序运行改进的效果"
-
+- `lab6_inst_test.coe`: slli, srli, sra, srai, andi, ori
