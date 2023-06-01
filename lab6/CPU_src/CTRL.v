@@ -84,24 +84,24 @@ module CTRL (
     always @(*) begin
         if (opcode == LUI)
             alu_func = 4'b1010; // Pass op2
-        else if (opcode == ARITH)
+        else if (opcode == ARITH || opcode == ARITHI)
              case ({inst[31:25], inst[14:12]})
                 10'b0100000000: alu_func = 4'b0001; // Sub
                 10'b0000000111: alu_func = 4'b0101; // And
                 10'b0000000110: alu_func = 4'b0110; // Or
-                10'b0000000001: alu_func = 4'b1001; // Sll
-                10'b0000000101: alu_func = 4'b1000; // Srl
-                10'b0100000101: alu_func = 4'b1011; // Sra
+                10'b0000000001: alu_func = 4'b1001; // Sll(i)
+                10'b0000000101: alu_func = 4'b1000; // Srl(i)
+                10'b0100000101: alu_func = 4'b1011; // Sra(i)
                 default: alu_func = 4'b0000; // Add
              endcase
-        else if (opcode == ARITHI) begin
-             case ({inst[31:25], inst[14:12]})
-                10'b0000000001: alu_func = 4'b1001; // Slli
-                10'b0000000101: alu_func = 4'b1000; // Srli
-                10'b0100000101: alu_func = 4'b1011; // Srai
-                default: alu_func = 4'b0000; // Add
-             endcase
-        end else
+        // else if (opcode == ARITHI)
+        //      case ({inst[31:25], inst[14:12]})
+        //         10'b0000000001: alu_func = 4'b1001; // Slli
+        //         10'b0000000101: alu_func = 4'b1000; // Srli
+        //         10'b0100000101: alu_func = 4'b1011; // Srai
+        //         default: alu_func = 4'b0000; // Add
+        //      endcase
+        else
             alu_func = 4'b0000; // Add
     end
     // [imm_type] COmpleted at `Immediate.v`

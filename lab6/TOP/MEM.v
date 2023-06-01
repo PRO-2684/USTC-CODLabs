@@ -18,12 +18,9 @@ module MEM(
     input [31:0] mem_check_addr,
     output [31:0] mem_check_data
 );
-   
-   // Your IP here.
-   // Remember that we need [9:2]?
 
     inst_mem Ins_mem (
-        .a(im_addr[9:2]),       // input wire [7 : 0] a
+        .a(im_addr[10:2]),       // input wire [8 : 0] a
         .spo(im_dout)           // output wire [31 : 0] spo
     );
 
