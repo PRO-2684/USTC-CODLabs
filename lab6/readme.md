@@ -13,4 +13,5 @@
         1. 在局部分支预测的基础上添加全局历史预测（GHR+PHT）
         2. 分析竞争处理策略，正确处理全局预测与局部预测的竞争，并接入流水线
         3. 需要能定量分析你的分支预测器对程序运行改进的效果"
-- `lab6_inst_test.coe`: slli, srli, sra, srai, andi, ori
+- `lab6_inst_test`: 除访存外的指令测试
+- `lab6_load_test`: 访存指令测试
