@@ -1,8 +1,8 @@
 - RV32-I 指令子集扩展 必做:
     - ✓ 必做部分(10) add、addi、auipc、lui、lw、sw、beq、blt、jal、jalr
     - 算数与逻辑指令(13) sll✓、slli✓、srl✓、srli✓、sra✓、srai✓、sub✓、xor✓、xori✓、or✓、ori✓、and✓、andi✓
-    - 分支与条件指令(8) bne、bge、bltu、bgeu、 slt、slti、slti、sltiu
-    - 访存指令(6) lb、lh、lbu、lhu、sb、sh"
+    - 分支与条件指令(8) bne✓、bge✓、bltu✓、bgeu✓、 slt、slti、slti、sltiu
+    - 访存指令(6) lb、lh、lbu、lhu、sb、sh
 - 分支预测 选做 3
     - 2bits 感知机局部历史分支预测
         1. 实现基于 2bits 感知机的局部历史分支预测及其纠正，并成功接入流水线

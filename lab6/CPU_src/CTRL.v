@@ -20,8 +20,8 @@ module CTRL (
     // Support add, addi, lui, auipc, beq, blt, jal, jalr, lw, sw
     // Support .sub, .and, .or; .bne, .bge, .bltu, .bgeu; sll, slli, srl, srli
     // Opcodes
-    parameter ARITH = 7'b0110011; // add, sub, and, or
-    parameter ARITHI = 7'b0010011;
+    parameter ARITH = 7'b0110011; // add, sub, and, or, shift, set
+    parameter ARITHI = 7'b0010011; // *i
     parameter LUI = 7'b0110111;
     parameter AUIPC = 7'b0010111;
     parameter BR = 7'b1100011;
@@ -78,21 +78,22 @@ module CTRL (
     // arith, addi, shift, shift_i, lui, jalr, lw, sw from register; beq, blt, auipc, jal from pc
     assign alu_src1_sel = (opcode == BR || opcode == AUIPC || opcode == JAL);
     // [alu_src2_sel] ALU operator 2 source (0 for register file)
-    // arith, shift from register
+    // arith
     assign alu_src2_sel = ~(opcode == ARITH);
     // [alu_func] Operating mode: add / pass2 / other
     always @(*) begin
         if (opcode == LUI)
             alu_func = 4'b1010; // Pass op2
         else if (opcode == ARITH || opcode == ARITHI)
-             case ({inst[31:25], inst[14:12]})
-                10'b0100000000: alu_func = 4'b0001; // Sub
-                10'b0000000111: alu_func = 4'b0101; // And(i)
-                10'b0000000110: alu_func = 4'b0110; // Or(i)
-                10'b0000000100: alu_func = 4'b0111; // Xor(i)
-                10'b0000000001: alu_func = 4'b1001; // Sll(i)
-                10'b0000000101: alu_func = 4'b1000; // Srl(i)
-                10'b0100000101: alu_func = 4'b1011; // Sra(i)
+             case (inst[14:12])
+                3'b000: alu_func = (inst[30]) ? 4'b0001 : 4'b0000; // Sub/Add
+                3'b001: alu_func = 4'b1001; // Sll(i)
+                3'b010: alu_func = 4'b1100; // Slt(i)
+                3'b011: alu_func = 4'b1101; // Slt(i)u
+                3'b100: alu_func = 4'b0111; // Xor(i)
+                3'b101: alu_func = (inst[30]) ? 4'b1011 : 4'b1000; // Sra(i)/Srl(i)
+                3'b110: alu_func = 4'b0110; // Or(i)
+                3'b111: alu_func = 4'b0101; // And(i)
                 default: alu_func = 4'b0000; // Add
              endcase
         else
