@@ -111,8 +111,12 @@ module CPU(
     wire [2:0] br_type_id;
     wire [2:0] br_type_ex;
     wire [2:0] br_type_mem;
-    wire [2:0] load_type;
-    wire [2:0] store_type;
+    wire [2:0] load_type_if;
+    wire [2:0] store_type_if;
+    wire [2:0] load_type_id;
+    wire [2:0] store_type_id;
+    wire [2:0] load_type_ex;
+    wire [2:0] store_type_ex;
     wire [1:0] rf_wd_sel_id;
     wire [1:0] rf_wd_sel_ex;
     wire [1:0] pc_sel_ex;
@@ -163,7 +167,9 @@ module CPU(
     wire jalr_wb;
     wire br_wb;
     wire dm_we_wb;
-    wire load_sext;
+    wire load_sext_if;
+    wire load_sext_id;
+    wire load_sext_ex;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
@@ -175,7 +181,7 @@ module CPU(
     assign next_pc = pc_next;
 
     // Memory rectify
-    MEM_RECT mem_rect(.load_type(load_type), .load_sext(load_sext), .store_type(store_type), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
+    MEM_RECT mem_rect(.load_type(load_type_ex), .load_sext(load_sext_ex), .store_type(store_type_ex), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
     // Pipeline
     ADD add(.rhs(pc_cur_if), .lhs(32'h4), .res(pc_add4_if));
     PC pc(.clk(clk), .stall(stall_if), .rst(rst), .pc_next(pc_next), .pc_cur(pc_cur_if));
@@ -219,16 +225,22 @@ module CPU(
         .dm_din_in(32'h0),
         .dm_dout_in(32'h0),
         .dm_we_in(1'h0),
+        .load_type_in(load_type_if),
+        .load_sext_in(load_sext_if),
+        .store_type_in(store_type_if),
         .pc_cur_out(pc_cur_id),
         .inst_out(inst_id),
         .rf_ra0_out(rf_ra0_id),
         .rf_ra1_out(rf_ra1_id),
         .rf_wa_out(rf_wa_id),
-        .pc_add4_out(pc_add4_id)
+        .pc_add4_out(pc_add4_id),
+        .load_type_out(load_type_id),
+        .load_sext_out(load_sext_id),
+        .store_type_out(store_type_id)
     );
     RF rf(.we(rf_we_wb), .clk(clk), .ra0(rf_ra0_id), .ra1(rf_ra1_id), .wa(rf_wa_wb), .wd(rf_wd_wb), .ra_dbg(cpu_check_addr[4:0]), .rd0(rf_rd0_raw_id), .rd1(rf_rd1_raw_id), .rd_dbg(rf_rd_dbg_id));
     Immediate immediate(.imm_type(imm_type_id), .inst(inst_id), .imm(imm_id));
-    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak), .load_type(load_type), .load_sext(load_sext), .store_type(store_type));
+    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak), .load_type(load_type_if), .load_sext(load_sext_if), .store_type(store_type_if));
     SEG_REG seg_reg_id_ex (
         .clk(clk),
         .flush(flush_ex),
@@ -268,6 +280,9 @@ module CPU(
         .dm_din_in(32'h0),
         .dm_dout_in(32'h0),
         .dm_we_in(dm_we_id),
+        .load_type_in(load_type_id),
+        .load_sext_in(load_sext_id),
+        .store_type_in(store_type_id),
         .pc_cur_out(pc_cur_ex),
         .inst_out(inst_ex),
         .rf_ra0_out(rf_ra0_ex),
@@ -288,7 +303,10 @@ module CPU(
         .jal_out(jal_ex),
         .jalr_out(jalr_ex),
         .br_type_out(br_type_ex),
-        .dm_we_out(dm_we_ex)
+        .dm_we_out(dm_we_ex),
+        .load_type_out(load_type_ex),
+        .load_sext_out(load_sext_ex),
+        .store_type_out(store_type_ex)
     );
     AND and_(.lhs(32'hFFFFFFFE), .rhs(alu_ans_ex), .res(pc_jalr_ex));
     MUX1 alu_sel1(.sel(alu_src1_sel_ex), .src0(rf_rd0_ex), .src1(pc_cur_ex), .res(alu_src1_ex));
@@ -337,6 +355,9 @@ module CPU(
         .dm_din_in(rf_rd1_ex),
         .dm_dout_in(32'h0),
         .dm_we_in(dm_we_ex),
+        .load_type_in(3'b0),
+        .load_sext_in(1'b0),
+        .store_type_in(3'b0),
         .pc_cur_out(pc_cur_mem),
         .inst_out(inst_mem),
         .rf_ra0_out(rf_ra0_mem),
@@ -411,6 +432,9 @@ module CPU(
         .dm_din_in(dm_din_mem),
         .dm_dout_in(dm_dout),
         .dm_we_in(dm_we_mem),
+        .load_type_in(3'b0),
+        .load_sext_in(1'b0),
+        .store_type_in(3'b0),
         .pc_cur_out(pc_cur_wb),
         .inst_out(inst_wb),
         .rf_ra0_out(rf_ra0_wb),
