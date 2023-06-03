@@ -12,6 +12,9 @@ module CTRL (
     output jal, jalr,
     output reg [2:0] br_type,
     output mem_we,
+    output reg [2:0] load_type,
+    output load_sext,
+    output reg [2:0] store_type,
     output ebreak
 );
     // 在读寄存器 rs 为 x0 时, 将 rf_re 设置为 0
@@ -27,8 +30,8 @@ module CTRL (
     parameter BR = 7'b1100011;
     parameter JAL = 7'b1101111;
     parameter JALR = 7'b1100111;
-    parameter LW = 7'b0000011;
-    parameter SW = 7'b0100011;
+    parameter LOAD = 7'b0000011; // lw, lh(u), lb(u)
+    parameter STORE = 7'b0100011; // sw, sh, sb
     parameter EBREAK = 7'b1110011;
     // Branch types
     parameter BEQ_type = 3'b110;
@@ -60,7 +63,7 @@ module CTRL (
     end
     // [rf_we, rf_wd_sel] Write registers: arith, addi, auipc, lui, lw, jal, jalr
     // 在写寄存器 rd 为 x0 时, 将 rf_we 设置为 0
-    assign rf_we = (|inst[11:7]) & (opcode == ARITH | opcode == ARITHI | opcode == AUIPC | opcode == LUI | opcode == LW | opcode == JAL | opcode == JALR);
+    assign rf_we = (|inst[11:7]) & (opcode == ARITH | opcode == ARITHI | opcode == AUIPC | opcode == LUI | opcode == LOAD | opcode == JAL | opcode == JALR);
 
     always @(*) begin
         case (opcode)
@@ -68,7 +71,7 @@ module CTRL (
             ARITHI: rf_wd_sel = 0;
             AUIPC: rf_wd_sel = 0;
             LUI: rf_wd_sel = 3;
-            LW: rf_wd_sel = 2;
+            LOAD: rf_wd_sel = 2;
             JAL: rf_wd_sel = 1;
             JALR: rf_wd_sel = 1;
             default: rf_wd_sel = 0;
@@ -102,7 +105,31 @@ module CTRL (
     // [imm_type] COmpleted at `Immediate.v`
     assign imm_type = 0;
     // [mem_we]
-    assign mem_we = (opcode == SW);
+    assign mem_we = (opcode == STORE);
+    // [load_type]
+    always @(*) begin
+        if (opcode == LOAD) begin
+            case (inst[13:12])
+                2'b00: load_type = {1'b1, inst[21:20]};
+                2'b01: load_type = {2'b01, inst[21]};
+                2'b10: load_type = 3'b000;
+                default: load_type = 0;
+            endcase
+        end else load_type = 0;
+    end
+    // [load_sext] Only if inst is load type and not lw and inst[14]=0
+    assign load_sext = (opcode == LOAD && ~inst[13]) ? ~inst[14] : 0;
+    // [store_type]
+    always @(*) begin
+        if (opcode == STORE) begin
+            case (inst[13:12])
+                2'b00: store_type = {1'b1, inst[21:20]};
+                2'b01: store_type = {2'b01, inst[21]};
+                2'b10: store_type = 3'b000;
+                default: store_type = 0;
+            endcase
+        end else store_type = 0;
+    end
     // [ebreak]
     assign ebreak = (opcode == EBREAK);
 endmodule

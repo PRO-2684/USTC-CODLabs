@@ -111,6 +111,8 @@ module CPU(
     wire [2:0] br_type_id;
     wire [2:0] br_type_ex;
     wire [2:0] br_type_mem;
+    wire [2:0] load_type;
+    wire [2:0] store_type;
     wire [1:0] rf_wd_sel_id;
     wire [1:0] rf_wd_sel_ex;
     wire [1:0] pc_sel_ex;
@@ -157,24 +159,23 @@ module CPU(
     wire dm_we_mem;
     wire rf_re0_wb;
     wire rf_re1_wb;
-    // wire alu_src1_sel_wb;
-    // wire alu_src2_sel_wb;
     wire jal_wb;
     wire jalr_wb;
     wire br_wb;
     wire dm_we_wb;
+    wire load_sext;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
     assign inst_raw = im_dout;
-    assign dm_dout = mem_dout;
     assign im_addr = pc_cur_if;
     assign mem_addr = alu_ans_mem;
-    assign mem_din = dm_din_mem;
     assign mem_we = dm_we_mem;
     assign current_pc = pc_cur_if;
     assign next_pc = pc_next;
 
+    // Memory rectify
+    MEM_RECT mem_rect(.load_type(load_type), .load_sext(load_sext), .store_type(store_type), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
     // Pipeline
     ADD add(.rhs(pc_cur_if), .lhs(32'h4), .res(pc_add4_if));
     PC pc(.clk(clk), .stall(stall_if), .rst(rst), .pc_next(pc_next), .pc_cur(pc_cur_if));
@@ -227,7 +228,7 @@ module CPU(
     );
     RF rf(.we(rf_we_wb), .clk(clk), .ra0(rf_ra0_id), .ra1(rf_ra1_id), .wa(rf_wa_wb), .wd(rf_wd_wb), .ra_dbg(cpu_check_addr[4:0]), .rd0(rf_rd0_raw_id), .rd1(rf_rd1_raw_id), .rd_dbg(rf_rd_dbg_id));
     Immediate immediate(.imm_type(imm_type_id), .inst(inst_id), .imm(imm_id));
-    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak));
+    CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak), .load_type(load_type), .load_sext(load_sext), .store_type(store_type));
     SEG_REG seg_reg_id_ex (
         .clk(clk),
         .flush(flush_ex),
