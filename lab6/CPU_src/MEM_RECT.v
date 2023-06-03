@@ -14,11 +14,11 @@ module MEM_RECT(
     always @(*) begin
         case (store_type)
             3'b010: mem_din = {mem_dout[31:16], dm_din_mem[15:0]};
-            3'b011: mem_din = {dm_din_mem[31:16], mem_dout[15:0]};
+            3'b011: mem_din = {dm_din_mem[15:0], mem_dout[15:0]};
             3'b100: mem_din = {mem_dout[31:8], dm_din_mem[7:0]};
-            3'b101: mem_din = {mem_dout[31:16], dm_din_mem[15:8], mem_dout[7:0]};
-            3'b110: mem_din = {mem_dout[31:24], dm_din_mem[23:16], mem_dout[15:0]};
-            3'b111: mem_din = {dm_din_mem[31:24], mem_dout[23:0]};
+            3'b101: mem_din = {mem_dout[31:16], dm_din_mem[7:0], mem_dout[7:0]};
+            3'b110: mem_din = {mem_dout[31:24], dm_din_mem[7:0], mem_dout[15:0]};
+            3'b111: mem_din = {dm_din_mem[7:0], mem_dout[23:0]};
             default: mem_din = dm_din_mem;
         endcase
     end

@@ -123,8 +123,8 @@ module CTRL (
     always @(*) begin
         if (opcode == STORE) begin
             case (inst[13:12])
-                2'b00: store_type = {1'b1, inst[21:20]};
-                2'b01: store_type = {2'b01, inst[21]};
+                2'b00: store_type = {1'b1, inst[8:7]};
+                2'b01: store_type = {2'b01, inst[8]};
                 2'b10: store_type = 3'b000;
                 default: store_type = 0;
             endcase
