@@ -89,7 +89,7 @@ module CTRL (
             alu_func = 4'b1010; // Pass op2
         else if (opcode == ARITH || opcode == ARITHI)
              case (inst[14:12])
-                3'b000: alu_func = (inst[30]) ? 4'b0001 : 4'b0000; // Sub/Add
+                3'b000: alu_func = (opcode == ARITHI) ? 4'b0000 : (inst[30] ? 4'b0001 : 4'b0000); // Sub/Add
                 3'b001: alu_func = 4'b1001; // Sll(i)
                 3'b010: alu_func = 4'b1100; // Slt(i)
                 3'b011: alu_func = 4'b1101; // Slt(i)u
@@ -102,7 +102,7 @@ module CTRL (
         else
             alu_func = 4'b0000; // Add
     end
-    // [imm_type] COmpleted at `Immediate.v`
+    // [imm_type] Completed at `Immediate.v`
     assign imm_type = 0;
     // [mem_we]
     assign mem_we = (opcode == STORE);
