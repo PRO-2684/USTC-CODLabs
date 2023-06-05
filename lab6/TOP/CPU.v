@@ -87,6 +87,7 @@ module CPU(
     wire [31:0] dm_addr_wb;
     wire [31:0] dm_din_wb;
     wire [31:0] dm_dout_wb;
+    wire [31:0] pc_next_ne; // pc_next if there's no exception
 
     wire [4:0] rf_ra0_id;
     wire [4:0] rf_ra1_id;
@@ -170,6 +171,7 @@ module CPU(
     wire load_sext_if;
     wire load_sext_id;
     wire load_sext_ex;
+    wire alu_overflow;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
@@ -180,6 +182,8 @@ module CPU(
     assign current_pc = pc_cur_if;
     assign next_pc = pc_next;
 
+    // pc_next considering exception
+    Exception exception(.alu_overflow(alu_overflow), .pc_next_ne(pc_next_ne), .pc_next(pc_next));
     // Memory rectify
     MEM_RECT mem_rect(.load_type(load_type_ex), .load_sext(load_sext_ex), .store_type(store_type_ex), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
     // Pipeline
@@ -311,7 +315,7 @@ module CPU(
     AND and_(.lhs(32'hFFFFFFFE), .rhs(alu_ans_ex), .res(pc_jalr_ex));
     MUX1 alu_sel1(.sel(alu_src1_sel_ex), .src0(rf_rd0_ex), .src1(pc_cur_ex), .res(alu_src1_ex));
     MUX1 alu_sel2(.sel(alu_src2_sel_ex), .src0(rf_rd1_ex), .src1(imm_ex), .res(alu_src2_ex));
-    ALU alu(.alu_func(alu_func_ex), .alu_src1(alu_src1_ex), .alu_src2(alu_src2_ex), .alu_ans(alu_ans_ex));
+    ALU alu(.alu_func(alu_func_ex), .alu_src1(alu_src1_ex), .alu_src2(alu_src2_ex), .alu_ans(alu_ans_ex), .overflow(alu_overflow));
     Branch branch(.br_type(br_type_ex), .op1(rf_rd0_ex), .op2(rf_rd1_ex), .br(br_ex));
     Encoder pc_sel_gen(.jal(jal_ex), .jalr(jalr_ex), .br(br_ex), .pc_sel(pc_sel_ex));
     MUX1 rf_rd0_fwd(.sel(rf_rd0_fe), .src0(rf_rd0_raw_ex), .src1(rf_rd0_fd), .res(rf_rd0_ex));
@@ -473,7 +477,7 @@ module CPU(
     );
     MUX2 reg_write_sel(.sel(rf_wd_sel_wb), .src0(alu_ans_wb), .src1(pc_add4_wb), .src2(dm_dout_wb), .src3(imm_wb), .res(rf_wd_wb));
     Hazard hazard(.rf_ra0_ex(rf_ra0_ex), .rf_ra1_ex(rf_ra1_ex), .rf_re0_ex(rf_re0_ex), .rf_re1_ex(rf_re1_ex), .rf_wa_mem(rf_wa_mem), .rf_we_mem(rf_we_mem), .rf_wd_sel_mem(rf_wd_sel_mem), .alu_ans_mem(alu_ans_mem), .pc_add4_mem(pc_add4_mem), .imm_mem(imm_mem), .rf_wa_wb(rf_wa_wb), .rf_we_wb(rf_we_wb), .rf_wd_wb(rf_wd_wb), .pc_sel_ex(pc_sel_ex), .rf_rd0_fe(rf_rd0_fe), .rf_rd1_fe(rf_rd1_fe), .rf_rd0_fd(rf_rd0_fd), .rf_rd1_fd(rf_rd1_fd), .stall_if(stall_if), .stall_id(stall_id), .stall_ex(stall_ex), .flush_if(flush_if), .flush_id(flush_id), .flush_ex(flush_ex), .flush_mem(flush_mem));
-    MUX2 npc_sel(.sel(pc_sel_ex), .src0(pc_add4_if), .src1(pc_jalr_ex), .src2(alu_ans_ex), .src3(alu_ans_ex), .res(pc_next));
+    MUX2 npc_sel(.sel(pc_sel_ex), .src0(pc_add4_if), .src1(pc_jalr_ex), .src2(alu_ans_ex), .src3(alu_ans_ex), .res(pc_next_ne));
 
     // Debugging
     wire [31:0] check_data_if;

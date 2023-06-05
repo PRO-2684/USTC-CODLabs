@@ -4,7 +4,8 @@ module ALU (
     input [3:0] alu_func,
     input [31:0] alu_src1,
     input [31:0] alu_src2,
-    output reg [31:0] alu_ans
+    output reg [31:0] alu_ans,
+    output reg overflow // Exception
 );
     always @(*) begin
         // assign `alu_ans`
@@ -24,6 +25,14 @@ module ALU (
             4'b1100: alu_ans = ($signed(alu_src1) < $signed(alu_src2)) ? 1 : 0; // slt(i): Set if less than
             4'b1101: alu_ans = (alu_src1 < alu_src2) ? 1 : 0; // slt(i)u: Set if less than (unsigned)
             default: alu_ans = 0;
+        endcase
+    end
+
+    always @(*) begin
+        case (alu_func)
+            4'b0000: overflow = (alu_src1[31] == alu_src2[31]) && (alu_src1[31] != alu_ans[31]);
+            4'b0001: overflow = (alu_src1[31] != alu_src2[31]) && (alu_src1[31] != alu_ans[31]);
+            default: overflow = 0; // We do not take other situations into account
         endcase
     end
 
