@@ -4,8 +4,10 @@ module ALU (
     input [3:0] alu_func,
     input [31:0] alu_src1,
     input [31:0] alu_src2,
+    input [31:0] csr_data,
     output reg [31:0] alu_ans,
-    output reg overflow // Exception
+    output reg overflow, // Exception
+    output [11:0] csr_addr
 );
     always @(*) begin
         // assign `alu_ans`
@@ -22,8 +24,9 @@ module ALU (
             4'b1001: alu_ans = alu_src1 << alu_src2;
             4'b1010: alu_ans = alu_src2; // Pass op2
             4'b1011: alu_ans = $signed(alu_src1) >>> alu_src2;
-            4'b1100: alu_ans = ($signed(alu_src1) < $signed(alu_src2)) ? 1 : 0; // slt(i): Set if less than
-            4'b1101: alu_ans = (alu_src1 < alu_src2) ? 1 : 0; // slt(i)u: Set if less than (unsigned)
+            // 4'b1100: alu_ans = ($signed(alu_src1) < $signed(alu_src2)) ? 1 : 0; // slt(i): Set if less than
+            // 4'b1101: alu_ans = (alu_src1 < alu_src2) ? 1 : 0; // slt(i)u: Set if less than (unsigned)
+            4'b1111: alu_ans = csr_data; // csrrs: return value of CSR
             default: alu_ans = 0;
         endcase
     end
@@ -35,5 +38,7 @@ module ALU (
             default: overflow = 0; // We do not take other situations into account
         endcase
     end
+
+    assign csr_addr = (alu_func == 4'b1111) ? alu_src2[11:0] : 0;
 
 endmodule

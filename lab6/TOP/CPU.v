@@ -88,7 +88,11 @@ module CPU(
     wire [31:0] dm_din_wb;
     wire [31:0] dm_dout_wb;
     wire [31:0] pc_next_ne; // pc_next if there's no exception
+    wire [31:0] csr_rd;
+    wire [31:0] csr_wd;
 
+    wire [11:0] csr_ra;
+    wire [11:0] csr_wa;
     wire [4:0] rf_ra0_id;
     wire [4:0] rf_ra1_id;
     wire [4:0] rf_wa_id;
@@ -172,6 +176,7 @@ module CPU(
     wire load_sext_id;
     wire load_sext_ex;
     wire alu_overflow;
+    wire csr_we;
 
     // Name mapping
     // cpu_clk = clk, cpu_rst = rst
@@ -183,7 +188,8 @@ module CPU(
     assign next_pc = pc_next;
 
     // pc_next considering exception
-    Exception exception(.alu_overflow(alu_overflow), .pc_next_ne(pc_next_ne), .pc_next(pc_next));
+    Exception exception(.clk(clk), .alu_overflow(alu_overflow), .pc_next_ne(pc_next_ne), .current_pc(pc_cur_ex), .pc_next(pc_next), .csr_we(csr_we), .csr_wa(csr_wa), .csr_wd(csr_wd));
+    CSR csr(.clk(clk), .we(csr_we), .ra(csr_ra), .rd(csr_rd), .wa(csr_wa), .wd(csr_wd));
     // Memory rectify
     MEM_RECT mem_rect(.load_type(load_type_ex), .load_sext(load_sext_ex), .store_type(store_type_ex), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
     // Pipeline
@@ -315,7 +321,7 @@ module CPU(
     AND and_(.lhs(32'hFFFFFFFE), .rhs(alu_ans_ex), .res(pc_jalr_ex));
     MUX1 alu_sel1(.sel(alu_src1_sel_ex), .src0(rf_rd0_ex), .src1(pc_cur_ex), .res(alu_src1_ex));
     MUX1 alu_sel2(.sel(alu_src2_sel_ex), .src0(rf_rd1_ex), .src1(imm_ex), .res(alu_src2_ex));
-    ALU alu(.alu_func(alu_func_ex), .alu_src1(alu_src1_ex), .alu_src2(alu_src2_ex), .alu_ans(alu_ans_ex), .overflow(alu_overflow));
+    ALU alu(.alu_func(alu_func_ex), .alu_src1(alu_src1_ex), .alu_src2(alu_src2_ex), .csr_data(csr_rd), .alu_ans(alu_ans_ex), .overflow(alu_overflow), .csr_addr(csr_ra));
     Branch branch(.br_type(br_type_ex), .op1(rf_rd0_ex), .op2(rf_rd1_ex), .br(br_ex));
     Encoder pc_sel_gen(.jal(jal_ex), .jalr(jalr_ex), .br(br_ex), .pc_sel(pc_sel_ex));
     MUX1 rf_rd0_fwd(.sel(rf_rd0_fe), .src0(rf_rd0_raw_ex), .src1(rf_rd0_fd), .res(rf_rd0_ex));

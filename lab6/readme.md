@@ -16,7 +16,7 @@
     4. 需要使用 `csrrs` 等指令将 mepc+4 加载到 x1 寄存器，并用 ret（jalr, x0, 0(x1)）指令作为异常处理程序结束的标志。此时即可正确跳转到用户程序。
 - 其它参考
     - [CSR 寄存器介绍](https://www.cnblogs.com/mikewolf2002/p/11314583.html)
-    - CSR 寄存器：mepc 存储发生异常指令的 PC，地址 0x342。
+    - CSR 寄存器：mepc 存储发生异常指令的 PC，地址 0x341。
 
 - `lab6_inst_test`: 除访存外的指令测试
 - `lab6_load_test`: 访存指令测试

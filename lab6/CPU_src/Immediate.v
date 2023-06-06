@@ -26,6 +26,7 @@ module Immediate (
             7'b0110111: imm = imm_u; // lui (U-type)
             7'b0000011: imm = imm_i; // lw (I-type)
             7'b1100111: imm = imm_i; // jalr (I-type)
+            7'b1110011: imm = imm_i; // csrrs (I-type)
             7'b0100011: imm = imm_r; // sw (R-type)
             7'b1100011: imm = imm_b; // branch (B-type)
             7'b1101111: imm = imm_j; // jal (J-type)
