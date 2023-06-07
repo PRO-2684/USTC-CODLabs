@@ -1,5 +1,4 @@
 ENTER:
-# TODO: Save used registers?
 # lui a0, 8
 # addi a0, a0, 0xffffff00 # a0 = 0x7f00
 li a0, 0x7f00
