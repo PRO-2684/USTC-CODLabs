@@ -10,7 +10,10 @@ module RF (
     output [31:0] rd1,
     output [31:0] rd_dbg,
     input [4:0] wa,
-    input [31:0] wd
+    input [31:0] wd,
+    // Exception
+    output [31:0] a0,
+    output [31:0] t0
 );
     reg [31:0] data [0:31];
     // Initialize
@@ -26,9 +29,11 @@ module RF (
     end
     wire we_ = we & ( | wa); // Corrected we signal (ignore we signal if wa == 0)
     // Write-first
-    assign rd0 = ((ra0 == wa) && we_)? wd : data[ra0];
-    assign rd1 = ((ra1 == wa) && we_)? wd : data[ra1];
-    assign rd_dbg = ((ra_dbg == wa) && we_)? wd : data[ra_dbg];
+    assign rd0 = ((ra0 == wa) && we_) ? wd : data[ra0];
+    assign rd1 = ((ra1 == wa) && we_) ? wd : data[ra1];
+    assign rd_dbg = ((ra_dbg == wa) && we_) ? wd : data[ra_dbg];
+    assign a0 = ((5'd10 == wa) && we_) ? wd : data[10];
+    assign t0 = ((5'd5 == wa) && we_) ? wd : data[5];
     // Write
     always @(posedge clk) begin
         if (we_) // Forbid writing x0

@@ -89,10 +89,13 @@ module CPU(
     wire [31:0] dm_dout_wb;
     wire [31:0] pc_next_ne; // pc_next if there's no exception
     wire [31:0] csr_rd;
-    wire [31:0] csr_wd;
+    wire [31:0] csr_wdpc;
+    wire [31:0] csr_wda0;
+    wire [31:0] csr_wdt0;
+    wire [31:0] rf_a0;
+    wire [31:0] rf_t0;
 
     wire [11:0] csr_ra;
-    wire [11:0] csr_wa;
     wire [4:0] rf_ra0_id;
     wire [4:0] rf_ra1_id;
     wire [4:0] rf_wa_id;
@@ -188,8 +191,8 @@ module CPU(
     assign next_pc = pc_next;
 
     // pc_next considering exception
-    Exception exception(.clk(clk), .alu_overflow(alu_overflow), .pc_next_ne(pc_next_ne), .current_pc(pc_cur_ex), .pc_next(pc_next), .csr_we(csr_we), .csr_wa(csr_wa), .csr_wd(csr_wd));
-    CSR csr(.clk(clk), .we(csr_we), .ra(csr_ra), .rd(csr_rd), .wa(csr_wa), .wd(csr_wd));
+    Exception exception(.clk(clk), .alu_overflow(alu_overflow), .pc_next_ne(pc_next_ne), .current_pc(pc_cur_ex), .rf_a0(rf_a0), .rf_t0(rf_t0), .pc_next(pc_next), .csr_we(csr_we), .csr_wdpc(csr_wdpc), .csr_wda0(csr_wda0), .csr_wdt0(csr_wdt0));
+    CSR csr(.clk(clk), .we(csr_we), .ra(csr_ra), .rd(csr_rd), .wdpc(csr_wdpc), .wda0(csr_wda0), .wdt0(csr_wdt0));
     // Memory rectify
     MEM_RECT mem_rect(.load_type(load_type_ex), .load_sext(load_sext_ex), .store_type(store_type_ex), .dm_din_mem(dm_din_mem), .mem_din(mem_din), .mem_dout(mem_dout), .dm_dout(dm_dout));
     // Pipeline
@@ -248,7 +251,7 @@ module CPU(
         .load_sext_out(load_sext_id),
         .store_type_out(store_type_id)
     );
-    RF rf(.we(rf_we_wb), .clk(clk), .ra0(rf_ra0_id), .ra1(rf_ra1_id), .wa(rf_wa_wb), .wd(rf_wd_wb), .ra_dbg(cpu_check_addr[4:0]), .rd0(rf_rd0_raw_id), .rd1(rf_rd1_raw_id), .rd_dbg(rf_rd_dbg_id));
+    RF rf(.we(rf_we_wb), .clk(clk), .ra0(rf_ra0_id), .ra1(rf_ra1_id), .wa(rf_wa_wb), .wd(rf_wd_wb), .ra_dbg(cpu_check_addr[4:0]), .rd0(rf_rd0_raw_id), .rd1(rf_rd1_raw_id), .rd_dbg(rf_rd_dbg_id), .a0(rf_a0), .t0(rf_t0));
     Immediate immediate(.imm_type(imm_type_id), .inst(inst_id), .imm(imm_id));
     CTRL ctrl(.inst(inst_id), .rf_re0(rf_re0_id), .rf_re1(rf_re1_id), .rf_wd_sel(rf_wd_sel_id), .rf_we(rf_we_id), .imm_type(imm_type_id), .alu_src1_sel(alu_src1_sel_id), .alu_src2_sel(alu_src2_sel_id), .alu_func(alu_func_id), .jal(jal_id), .jalr(jalr_id), .br_type(br_type_id), .mem_we(dm_we_id), .ebreak(ebreak), .load_type(load_type_if), .load_sext(load_sext_if), .store_type(store_type_if));
     SEG_REG seg_reg_id_ex (
