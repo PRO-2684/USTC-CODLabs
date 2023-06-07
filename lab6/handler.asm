@@ -4,9 +4,10 @@ ENTER:
 li a0, 0x7f00
 # lui t0, 0xfff88810
 # addi t0, t0, 0xfffff888 # t0 = 0x8880F888
+sw zero, 0(a0) # Reset button status
 li t0, 0x8880F888
 sw t0, 8(a0) # Segment display
-sw zero, 0(a0) # Reset button status
+add t0, zero, zero
 add t0, zero, zero
 POLLING:
 lw t0, 0(a0)

@@ -24,8 +24,6 @@ module ALU (
             4'b1001: alu_ans = alu_src1 << alu_src2;
             4'b1010: alu_ans = alu_src2; // Pass op2
             4'b1011: alu_ans = $signed(alu_src1) >>> alu_src2;
-            // 4'b1100: alu_ans = ($signed(alu_src1) < $signed(alu_src2)) ? 1 : 0; // slt(i): Set if less than
-            // 4'b1101: alu_ans = (alu_src1 < alu_src2) ? 1 : 0; // slt(i)u: Set if less than (unsigned)
             4'b1111: alu_ans = csr_data; // csrrs: return value of CSR
             default: alu_ans = 0;
         endcase
