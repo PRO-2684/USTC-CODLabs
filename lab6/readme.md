@@ -21,9 +21,3 @@
 - `lab6_inst_test`: 除访存外的指令测试
 - `lab6_load_test`: 访存指令测试
 - `inst_test`: 助教提供的检测程序
-
- alu_ans -> alu_overflow = csr_we -> csr_rd (ALU/csr_data) -?> (ALU/alu_ans)
-alu_func ⬆️-> csr_ra (ALU/csr_addr) -⬆️
-alu_src2 -----⬆️
-
-[DRC 23-20] Rule violation (LUTLP-1) Combinatorial Loop Alert - 7 LUT cells form a combinatorial loop. This can create a race condition. Timing analysis may not be accurate. The preferred resolution is to modify the design to remove combinatorial logic loops. If the loop is known and understood, this DRC can be bypassed by acknowledging the condition and setting the following XDC constraint on any net in the loop: 'set_property ALLOW_COMBINATORIAL_LOOPS TRUE [net_nets <myHier/myNet>'. The cells in the loop are: cpu/seg_reg_id_ex/my_reg/mepc[31]_i_1, cpu/seg_reg_id_ex/my_reg/reg_dout[301]_i_7, cpu/seg_reg_id_ex/my_reg/reg_dout[301]_i_9, cpu/seg_reg_id_ex/my_reg/reg_dout[301]_i_12, cpu/seg_reg_id_ex/my_reg/reg_dout[303]_i_1, cpu/seg_reg_id_ex/my_reg/reg_dout[303]_i_3, cpu/seg_reg_id_ex/my_reg/reg_dout[303]_i_5.

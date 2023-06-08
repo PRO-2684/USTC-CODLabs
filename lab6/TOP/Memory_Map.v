@@ -1,4 +1,4 @@
-/* 
+/*
  *   Author: wintermelon
  *   Last update: 2023.04.13
  */
@@ -27,19 +27,19 @@ module Memory_Map(
     localparam BTN_STATUS = 32'h0000_7f00;
     localparam SW_INPUT = 32'h0000_7f04;
     localparam SEG_OUTPUT = 32'h0000_7f08;
-    localparam LED0 = 32'h0000_7f0c; 
+    localparam LED0 = 32'h0000_7f0c;
     localparam LED1 = 32'h0000_7f10;
     localparam LED2 = 32'h0000_7f14;
     localparam LED3 = 32'h0000_7f18;
 
     // Registers
-    reg [31:0] btn_status;   
-    reg [31:0] sw_input; 
-    reg [31:0] seg_output;     
+    reg [31:0] btn_status;
+    reg [31:0] sw_input;
+    reg [31:0] seg_output;
     reg [31:0] led0;
     reg [31:0] led1;
-    reg [31:0] led2; 
-    reg [31:0] led3;    
+    reg [31:0] led2;
+    reg [31:0] led3;
 
     // Decide dm_data
     always @(*) begin

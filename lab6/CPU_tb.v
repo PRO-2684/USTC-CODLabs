@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-/* 
+/*
  *   Author: wintermelon
  *   Last update: 2023.04.20
  */
@@ -12,7 +12,7 @@ module CPU_tb();
     wire mem_we;
 
     CPU cpu (
-        .clk(cpu_clk), 
+        .clk(cpu_clk),
         .rst(cpu_rst),
 
         // ================================ Memory and MMIO Part ================================
@@ -46,7 +46,7 @@ module CPU_tb();
         .dm_we(mem_we),
         .dm_din(mem_din),
         .dm_dout(mem_dout),
-        
+
         // ================================ Debug Part ================================
         // MEM Debug BUS
         .mem_check_addr('b0),
