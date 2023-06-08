@@ -26,7 +26,7 @@ module MEM(
         .spo(inst_dout)           // output wire [31 : 0] spo
     );
     exception_mem Exception_mem(
-        .a(im_addr[9:2]),
+        .a(im_addr[6:2]),
         .spo(exception_dout)
     );
     assign im_dout = im_addr >= 32'h4000 ? exception_dout : inst_dout;
